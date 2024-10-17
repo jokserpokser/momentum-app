@@ -1,7 +1,6 @@
-import logo from './logo.svg';
 import './App.css';
 import Time from './components/Time';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 function App() {
   const [nameInput, setNameInput] = useState('');
@@ -13,54 +12,68 @@ function App() {
   const [nameInputClassName, setNameInputClassName] = useState('block');
   const [mainGoalInputClassName, setMainGoalInputClassName] = useState('hidden');
 
-  useEffect(() => {
+  const [mainGoalChecked, setMainGoalChecked] = useState(false);
 
-  }, [name])
+
   return (
     <div className="App">
       <div className='bg-gray-900 text-white h-screen flex flex-col justify-center'>
         <div>
           <h2 className='text-8xl'><Time /></h2>
-          <h3 className='text-4xl mb-24'>Good Morning</h3>
+          <h3 className='text-4xl mb-24'>
+            {nameInputClassName === 'hidden' && (
+              <p>Good Morning, <button className='hover:underline' onClick={() => {
+                setNameInputClassName('block');
+                setMainGoalInputClassName('hidden');
+              }}>{name}.</button></p>
+            )}
+          </h3>
         </div>
 
-        {nameInputClassName == 'hidden' && (
-          <p>Hello, <button className='hover:text-blue-900' onClick={() => {
-            setNameInputClassName('block');
-            setMainGoalInputClassName('hidden');
-          }}>{name}!</button></p>
-        )}
 
-        {mainGoalInputClassName == 'hidden' && nameInputClassName == 'hidden' &&
+        {mainGoalInputClassName === 'hidden' && nameInputClassName === 'hidden' &&
           (
             <>
-              <h2 className='font-bold'>Main Goal</h2>
-              <p><button className='hover:text-blue-900' onClick={() => {
-                setMainGoalInputClassName('block');
-              }}>{`${mainGoal}`}</button></p>
+              <h2 className='font-bold text-2xl'>Today</h2>
+              <label>
+                <input type="checkbox" className='w-6 h-6' checked={mainGoalChecked} onChange={(e) => {
+                  setMainGoalChecked(e.target.checked);
+                }} /><button className={mainGoalChecked ? 'line-through over:underline text-4xl ml-4':'hover:underline text-4xl ml-4'} onClick={() => {
+                  setMainGoalInputClassName('block');
+                }}>{`${mainGoal}`}</button>
+              </label>
             </>
           )
         }
 
-        <div className={nameInputClassName}>
-          <p><label htmlFor="name">What should we call you?</label></p>
-          <input type="text" className='py-1 px-2 border-b border-black bg-gray-800 focus:outline-none' value={nameInput} placeholder='Input your name' onChange={(e) => { setNameInput(e.target.value) }} />
-          <button className='bg-blue-700 text-white px-2 py-1 hover:bg-blue-900' onClick={() => {
+        <div className={nameInputClassName} >
+          <form action="" onSubmit={(e) => {
+            e.preventDefault();
             setName(nameInput);
             setNameInputClassName('hidden');
-            if (!name) {
+            if (!name || !mainGoal) {
               setMainGoalInputClassName('block');
             }
-          }}>Enter</button>
+          }}>
+            <p><label htmlFor="name">What should we call you?</label></p>
+            <input type="text" className='py-1 px-2 border-b border-white bg-transparent focus:outline-none text-center' value={nameInput} placeholder='Input your name' onChange={(e) => { setNameInput(e.target.value) }} />
+            <br></br>
+            <input type="submit" className='bg-blue-800 text-white px-2 py-1 hover:bg-blue-900 mt-4' value="Enter" />
+          </form>
         </div>
 
         <div className={mainGoalInputClassName}>
-          <p><label htmlFor="name">What is your main goal for Today?</label></p>
-          <input type="text" className='py-1 px-2 border-b border-black bg-gray-800 focus:outline-none' value={mainGoalInput} placeholder='Input your name' onChange={(e) => { setMainGoalInput(e.target.value) }} />
-          <button className='bg-blue-950 text-white px-2 py-1 hover:bg-blue-900' onClick={() => {
+          <form action="" onSubmit={(e) => {
+            e.preventDefault();
             setMainGoal(mainGoalInput);
             setMainGoalInputClassName('hidden');
-          }}>Enter</button>
+          }}>
+            <p className='mb-4'><label htmlFor="name">What is your main goal for Today?</label></p>
+            <input type="text" className='py-1 px-2 border-b border-white bg-transparent focus:outline-none text-center' value={mainGoalInput} placeholder='Input your Goal for Today' onChange={(e) => { setMainGoalInput(e.target.value) }} />
+            <br />
+            <input type="submit" className='bg-blue-800 text-white px-2 py-1 hover:bg-blue-900 mt-4' value="Enter" />
+          </form>
+
         </div>
       </div>
     </div>
