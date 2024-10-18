@@ -1,7 +1,7 @@
 import './App.css';
 import Tasks from './components/Tasks';
 import Time from './components/Time';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function App() {
   const [timeGreeting, setTimeGreeting] = useState('')
@@ -17,15 +17,32 @@ function App() {
 
   const [mainGoalChecked, setMainGoalChecked] = useState(false);
 
+  useEffect(() => {
+    const updatedGreeting = () => {
+      const hour = new Date().getHours();
+      if (hour < 12) {
+        setTimeGreeting("Good Morning");
+      } else if (hour < 18) {
+        setTimeGreeting("Good Afternoon");
+      } else {
+        setTimeGreeting("Good Evening");
+      }
+    };
+
+    updatedGreeting();
+    const timer = setInterval(updatedGreeting, 1000);
+
+    return () => clearInterval(timer);
+  })
 
   return (
     <div className="App">
       <div className='bg-gray-900 text-white h-screen flex flex-col justify-center'>
         <div>
-          <h2 className='text-8xl'><Time timeGreeting={timeGreeting} /></h2>
+          <h2 className='text-8xl'><Time /></h2>
           <h3 className='text-4xl mb-24'>
             {nameInputClassName === 'hidden' && (
-              <p>Good Morning, <button className='hover:underline' onClick={() => {
+              <p>{timeGreeting}, <button className='hover:underline' onClick={() => {
                 setNameInputClassName('block');
                 setMainGoalInputClassName('hidden');
               }}>{name}.</button></p>
@@ -79,7 +96,7 @@ function App() {
         </div>
 
         <div className='absolute bottom-0 right-0 pb-4 pr-6'>
-          <Tasks/>
+          <Tasks />
         </div>
       </div>
     </div>
